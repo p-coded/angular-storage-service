@@ -1,0 +1,113 @@
+<div id="sessionstorageServiceDemoView">
+    <div class="app-site-heading">
+        <div class="app-site-heading-container">
+            <h1 class="text-center app-site-heading-title">Session Storage</h1>
+            <button type="button" class="btn btn-xs btn-primary" ng-click="ssvm.clearAll()">Clear SessionStorage</button>
+            <button type="button" class="btn btn-xs btn-primary" ng-click="ssvm.log()">Log</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-md-5">
+            <div class="input-group">
+                <div class="input-group-addon">Prefix</div>
+                <input type="text" class="form-control" ng-model="ssvm.prefix" ng-readonly="true">
+            </div>
+            <div class="gap-sm">
+                &nbsp;
+            </div>
+            <p class="alert text-center"><span class="badge">1</span>&nbsp;Einen neuen Key in die Liste aufnehmen</p>
+            <form style="margin: 10px 0;">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" ng-model="ssvm.key">
+                    <span class="input-group-btn">
+                        <button class="btn" type="submit" ng-click="ssvm.addKey(ssvm.key, $event)"><span class="glyphicon glyphicon-plus"></span>&zwj;</button>
+                    </span>
+                </div>
+            </form>
+
+            <p class="alert text-center"><span class="badge">2</span>&nbsp;Liste der im LocalStorage verfügbaren Key/Value-Paare</p>
+            <form class="form-horizontal" ng-submit="ssvm.storeValue(value)" style="background:#EEE; border-radius:4px; padding: 10px;" >
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Key</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" ng-options="val for (key,val) in ssvm.constants.sessionstorage" ng-model="ssvm.selected" ng-change="ssvm.doChange(ssvm.selected)"></select>
+                    </div>
+                    <div class="col-sm-2">
+                        <button ng-show="ssvm.currentKey" class="form-control" href="" ng-click="ssvm.deleteKey(ssvm.currentKey)"><span class="glyphicon glyphicon-remove-sign"></span></button>
+                    </div>
+                </div>
+            </form>
+
+            <p class="alert text-center"><span class="badge">3</span>&nbsp;Neuen Wert für das ausgewählte Key/Value-Paar setzen</p>
+            <form class="form-horizontal" ng-submit="ssvm.storeValue(ssvm.value)" style="background:#EEE; border-radius:4px; padding: 10px;" ng-show="!ssvm.isObject(ssvm.value)">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="newValueInput">Value</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="newValueInput" ng-model="ssvm.value" ng-disabled="!ssvm.currentKey">
+                    </div>
+                </div>
+            </form>
+
+            <form class="form-horizontal" ng-submit="ssvm.storeValue(ssvm.value)" style="background:#EEE; border-radius:4px; padding: 10px;" ng-show="ssvm.isObject(ssvm.value)">
+                <div class="form-group" ng-repeat="(key, val) in ssvm.value track by $index">
+                    <label class="col-sm-4 control-label" for="{{key + 'Input'}}" ng-bind="key"></label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="{{key + 'Input'}}" ng-model="ssvm.value[key]">
+                    </div>
+                </div> 
+                <div class="form-group hidden">
+                    <div class="col-sm-offset-4 col-sm-8">
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+        <div class="col col-md-7">
+            <div class="text-center">
+                <div class="btn-toolbar" style="margin:10px 0;">
+                    <div class="btn-group btn-group-xs" ng-repeat="obj in ssvm.all">
+                        <button type="button" class="btn btn-primary" ng-click="ssvm.loadByKey(obj.key)" ng-bind="obj.key"></button>
+                        <button type="button" class="btn btn-danger" ng-click="ssvm.deleteKey(obj.key)">
+                            <span class="glyphicon glyphicon-remove-sign"></span>&zwj;
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="list-group" ng-show="ssvm.currentKey">
+                <li class="list-group-item" style="overflow:hidden;">
+                    <div class="row">
+                        <div class="col col-md-12 clearfix" style="margin-bottom:10px;">
+                            <div class="btn-group btn-group-sm pull-right">
+                                <button class="btn btn-primary" ng-click="ssvm.loadByKey(ssvm.currentKey)"><strong>{{ssvm.currentKey}}</strong></button>
+                                <button class="btn btn-default" ng-click="ssvm.deleteKey(ssvm.currentKey)"><span class="glyphicon glyphicon-remove-sign"></span>&zwj;</button>
+                            </div>
+                        </div>
+                        <div class="col col-md-12">
+                            <pre ng-bind="ssvm.originalValue | json" style="font-weight:bold;"></pre>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+
+            <!--            <ul class="list-group">
+                            <li class="list-group-item" ng-repeat="obj in ssvm.all" style="overflow:hidden;">
+                                <div class="row">
+                                    <div class="col col-md-12 clearfix" style="margin-bottom:10px;">
+                                        <div class="btn-group btn-group-sm pull-right">
+                                            <button class="btn btn-primary" ng-click="ssvm.loadByKey(obj.key)"><strong>{{obj.key}}</strong></button>
+                                            <button class="btn btn-default" ng-click="ssvm.deleteKey(obj.key)"><span class="glyphicon glyphicon-remove-sign"></span>&zwj;</button>
+                                        </div>
+                                    </div>
+                                    <div class="col col-md-12">
+                                        <pre ng-bind="obj.value | json" style="font-weight:bold;"></pre>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>-->
+        </div>
+    </div>
+</div>
